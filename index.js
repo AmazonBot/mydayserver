@@ -1,7 +1,11 @@
 const express = require("express");
 const cors = require('cors');
-const { QuickDB } = require("quick.db");
-const db = new QuickDB(); // will make a json.sqlite in the root folder
+// const { QuickDB } = require("quick.db");
+// const db = new QuickDB(); // will make a json.sqlite in the root folder
+if (typeof localStorage === "undefined" || localStorage === null) {
+  var db = require('node-localstorage').LocalStorage;
+  db = new db('./scratch');
+}
 const PORT = process.env.PORT || 7145;
 var bodyParser = require('body-parser')
 const app = express();
@@ -19,7 +23,7 @@ app.get("/", async (req, res) => {
 app.get("/sync/get/", async (req, res) => {
   const syncKey = req.query.key;
   console.log(syncKey)
-  res.send(await db.get(syncKey))
+  res.send(JSON.parse(await db.getItem(syncKey)))
 });
 
 
@@ -27,7 +31,7 @@ app.post("/sync/set/", async (req, res) => {
   const syncKey = req.query.key;
   const data = req.body
   console.log(req.body)
-  db.set(syncKey,data)
+  db.setItem(syncKey,JSON.stringify(data))
   res.status(200).send("YIPEE")
 });
 
@@ -40,7 +44,7 @@ app.get("/sync/move/set", async (req, res) => {
     key:syncKey,
     code:code
   })
-  await db.set("CODES",listofcodes)
+  await db.setItem("CODES",listofcodes)
   res.send(
     {
       code:code
@@ -50,7 +54,7 @@ app.get("/sync/move/set", async (req, res) => {
 
 app.get("/sync/move/get", async (req, res) => {
   const tempCode = req.query.code;
-  let listofcodes = await db.get("CODES") || []
+  let listofcodes = await db.getItem("CODES") || []
   console.log(listofcodes)
   if (listofcodes == []) {
     res.status(500).send("NO")
