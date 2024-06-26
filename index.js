@@ -4,6 +4,7 @@ const cors = require('cors');
 // const db = new QuickDB(); // will make a json.sqlite in the root folder
 if (typeof localStorage === "undefined" || localStorage === null) {
   var db = require('node-localstorage').LocalStorage;
+  console.log(__dirname)
   db = new db('./scratch');
 }
 const PORT = process.env.PORT || 7145;
