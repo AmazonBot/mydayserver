@@ -1,11 +1,13 @@
 const express = require("express");
 const cors = require('cors');
+var path = require('path');
+
 // const { QuickDB } = require("quick.db");
 // const db = new QuickDB(); // will make a json.sqlite in the root folder
 if (typeof localStorage === "undefined" || localStorage === null) {
   var db = require('node-localstorage').LocalStorage;
-  console.log(__dirname)
-  db = new db('./scratch');
+  console.log(process.cwd())
+  db = new db(path.join(process.cwd(), '/scratch'));
 }
 const PORT = process.env.PORT || 7145;
 var bodyParser = require('body-parser')
