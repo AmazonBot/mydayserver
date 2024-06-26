@@ -42,7 +42,7 @@ app.post("/sync/set/", async (req, res) => {
 app.get("/sync/move/set", async (req, res) => {
   const syncKey = req.query.key;
   const code = Math.floor(Math.random()*(999999 - 100000) + 100000)
-  let listofcodes = await db.get("CODES") || []
+  let listofcodes = await db.getItem("CODES") || []
   listofcodes.push({
     key:syncKey,
     code:code
