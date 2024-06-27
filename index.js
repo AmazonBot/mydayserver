@@ -63,6 +63,7 @@ app.get("/sync/move/get", async (req, res) => {
     res.status(500).send("NO")
   } else {
     listofcodes = listofcodes.filter(elem => elem.code == tempCode)
+    console.log(listofcodes)
     res.send(listofcodes[0])
   }
 });
