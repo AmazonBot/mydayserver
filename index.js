@@ -57,14 +57,26 @@ app.get("/sync/move/set", async (req, res) => {
 
 app.get("/sync/move/get", async (req, res) => {
   const tempCode = req.query.code;
-  let listofcodes = await db.get("CODES") || []
+  let endres = {}
+  var listofcodes = await db.get("CODES") || []
   console.log(listofcodes)
   if (listofcodes == []) {
     res.status(500).send("NO")
   } else {
-    listofcodes = listofcodes.filter(elem => elem.code == tempCode)
-    console.log(listofcodes)
-    res.send(listofcodes[0])
+    listofcodes.map(elem => {
+      console.log(elem.code,tempCode,elem.code == parseInt(tempCode))
+      if (elem.code == parseInt(tempCode)) {
+        endres = 
+          {
+            "key":elem.key,
+            "code":elem.code
+          }
+
+      }
+    })
+    
+    console.log(endres)
+    res.send(endres)
   }
 });
 
