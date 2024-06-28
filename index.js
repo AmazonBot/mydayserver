@@ -10,7 +10,8 @@ const db = new QuickDB(); // will make a json.sqlite in the root folder
 //   db = new db(path.join(process.cwd(), '/scratch'));
 // }
 const PORT = process.env.PORT || 7145;
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+const { type } = require("os");
 const app = express();
 app.use(bodyParser.json())
 
@@ -26,7 +27,14 @@ app.get("/", async (req, res) => {
 app.get("/sync/get/", async (req, res) => {
   const syncKey = req.query.key;
   console.log(syncKey)
-  res.send(JSON.parse(await db.get(syncKey)))
+  if (typeof syncKey == "undefined") {
+    res.status(500).send({reply:"NO"})
+  } else if (await db.has(syncKey)) {
+    res.send(JSON.parse(await db.get(syncKey)))
+  } else {
+    res.status(500).send({reply:"NO"})
+  }
+  
 });
 
 
@@ -57,14 +65,26 @@ app.get("/sync/move/set", async (req, res) => {
 
 app.get("/sync/move/get", async (req, res) => {
   const tempCode = req.query.code;
-  let listofcodes = await db.get("CODES") || []
+  let endres = {}
+  var listofcodes = await db.get("CODES") || []
   console.log(listofcodes)
   if (listofcodes == []) {
     res.status(500).send("NO")
   } else {
-    listofcodes = listofcodes.filter(elem => elem.code == tempCode)
-    console.log(listofcodes)
-    res.send(listofcodes[0])
+    listofcodes.map(elem => {
+      console.log(elem.code,tempCode,elem.code == parseInt(tempCode))
+      if (elem.code == parseInt(tempCode)) {
+        endres = 
+          {
+            "key":elem.key,
+            "code":elem.code
+          }
+
+      }
+    })
+    
+    console.log(endres)
+    res.send(endres)
   }
 });
 
