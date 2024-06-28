@@ -28,11 +28,11 @@ app.get("/sync/get/", async (req, res) => {
   const syncKey = req.query.key;
   console.log(syncKey)
   if (typeof syncKey == "undefined") {
-    res.status(500).send("NO")
+    res.status(500).send({reply:"NO"})
   } else if (await db.has(syncKey)) {
     res.send(JSON.parse(await db.get(syncKey)))
   } else {
-    res.status(500).send("NO")
+    res.status(500).send({reply:"NO"})
   }
   
 });
